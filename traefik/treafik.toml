@@ -27,6 +27,6 @@ onHostRule = true
 
 [docker]
   endpoint = "unix:///var/run/docker.sock"
-  domain = "klemm.one"
+  domain = "<<domain>>"
   watch = true
   exposedbydefault = false
