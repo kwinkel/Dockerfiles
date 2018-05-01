@@ -1,0 +1,17 @@
+version: "3"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  app:
+    build: ./nginx
+    networks:
+      - reverseproxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.backend=app"
+      - "traefik.frontend.rule=Host:${DOMAIN}"
