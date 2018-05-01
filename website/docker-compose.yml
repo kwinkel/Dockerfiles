@@ -13,5 +13,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.port=80"
       - "traefik.backend=app"
       - "traefik.frontend.rule=Host:${DOMAIN}"
