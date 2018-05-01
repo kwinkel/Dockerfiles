@@ -12,11 +12,11 @@ services:
     image: hardware/mailserver:${MAILSERVER_DOCKER_TAG}
     container_name: mailserver
     restart: ${RESTART_MODE}
-    domainname: ${MAILSERVER_HOSTNAME}.${MAILSERVER_DOMAIN}
+    domainname: ${MAILSERVER_DOMAIN}
     hostname: ${MAILSERVER_HOSTNAME}
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Host:spam.${MAILSERVER_DOMAIN}
+      - traefik.frontend.rule=Host:mail.${MAILSERVER_DOMAIN}
       - traefik.port=11334
       - traefik.docker.network=traefik_reverseproxy
     ports:
