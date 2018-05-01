@@ -14,7 +14,6 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_reverseproxy"
       - "traefik.port=80"
-      - "traefik.backend=app"
       - "traefik.frontend.rule=Host:${DOMAIN},www.${DOMAIN}"
       - "traefik.frontend.redirect.regex=^https?://www.${DOMAIN}/(.*)"
       - "traefik.frontend.redirect.replacement=https://${DOMAIN}/$${1}"
