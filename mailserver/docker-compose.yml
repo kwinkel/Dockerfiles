@@ -46,7 +46,7 @@ services:
     hostname: ${MAILSERVER_HOSTNAME}
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Host:admin.${MAILSERVER_DOMAIN}
+      - traefik.frontend.rule=Host:mailadmin.${MAILSERVER_DOMAIN}
       - traefik.port=8888
       - traefik.docker.network=traefik_reverseproxy
     environment:
