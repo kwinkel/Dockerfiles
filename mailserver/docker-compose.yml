@@ -30,7 +30,7 @@ services:
       - RSPAMD_PASSWORD=${RSPAMD_PASSWORD}     # Rspamd WebUI password (required)
     volumes:
       - ${VOLUMES_ROOT_PATH}/mail:/var/mail
-      - /home/docker/traefik/acme:/etc/letsencrypt/acme
+      - ${TRAEFIK_PATH}/acme:/etc/letsencrypt/acme
     depends_on:
       - mariadb
       - redis
