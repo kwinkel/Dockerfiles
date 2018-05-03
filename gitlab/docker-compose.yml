@@ -6,8 +6,8 @@ networks:
       name: traefik_reverseproxy
 
 services:
-  web:
-    image: 'gitlab/gitlab-ce:latest'
+  omnibus:
+    image: 'gitlab/gitlab-ce'
     restart: always
     hostname: ${GITLAB_DOMAIN}
     networks:
@@ -15,9 +15,25 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://${GITLAB_DOMAIN}'
+        gitlab_rails['lfs_enabled'] = true
+        gitlab_rails['registry_enabled'] = true
+        registry_external_url 'https://${GITLAB_DOMAIN}:${GITLAB_REGISTRY_PORT}'
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = '${GITLAB_SMTP_HOSTNAME}'
+        gitlab_rails['smtp_port'] = ${GITLAB_SMTP_PORT}    
+        gitlab_rails['smtp_user_name'] = '${GITLAB_SMTP_USERNAME}'
+        gitlab_rails['smtp_password'] = '${GITLAB_SMTP_PASSWORD}'
+        gitlab_rails['smtp_authentication'] = 'login'
+        gitlab_rails['smtp_ssl'] = false
+        gitlab_rails['smtp_force_ssl'] = false
+        gitlab_rails['smtp_tls'] = false
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['smtp_openssl_verify_mode'] = 'none'
+        gitlab_rails['gitlab_email_from'] = '${GITLAB_SMTP_USERNAME}'
+        gitlab_rails['gitlab_email_reply_to'] = '${GITLAB_SMTP_USERNAME}'
     ports:
       - '${GITLAB_SSH_PORT}:22'
-      - '4567:4567'
+      - '${GITLAB_REGISTRY_PORT}:${GITLAB_REGISTRY_PORT}'
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_reverseproxy"
@@ -27,7 +43,6 @@ services:
       - '${VOLUMES_ROOT_PATH}/etc/gitlab:/etc/gitlab'
       - '${VOLUMES_ROOT_PATH}/var/log/gitlab:/var/log/gitlab'
       - '${VOLUMES_ROOT_PATH}/var/opt/gitlab:/var/opt/gitlab'
-      - './gitlab.rb:/etc/gitlab/gitlab.rb'
       - /var/run/docker.sock:/var/run/docker.sock
 
   multi-runner:

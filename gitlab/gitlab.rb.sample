@@ -1,4 +1,0 @@
-gitlab_rails['lfs_enabled'] = true
-
-gitlab_rails['registry_enabled'] = true
-registry_external_url 'https://<<YOUR GITLAB DOMAIN>>:4567'
