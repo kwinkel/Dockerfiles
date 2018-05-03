@@ -28,3 +28,12 @@ services:
       - '${VOLUMES_ROOT_PATH}/var/log/gitlab:/var/log/gitlab'
       - '${VOLUMES_ROOT_PATH}/var/opt/gitlab:/var/opt/gitlab'
       - './gitlab.rb:/etc/gitlab/gitlab.rb'
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  multi-runner:
+    image: gitlab/gitlab-runner
+    restart: always
+    volumes:
+      - ./gitlab-runner:/etc/gitlab-runner
+      - ${VOLUMES_ROOT_PATH}/gitlab-runner/cache:/cache
+      - /var/run/docker.sock:/var/run/docker.sock 
