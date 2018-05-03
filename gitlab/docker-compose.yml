@@ -1,0 +1,30 @@
+version: "3"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: ${GITLAB_DOMAIN}
+    networks:
+      - reverseproxy
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://${GITLAB_DOMAIN}'
+    ports:
+      - '${GITLAB_SSH_PORT}:22'
+      - '4567:4567'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:${GITLAB_DOMAIN}"
+    volumes:
+      - '${VOLUMES_ROOT_PATH}/etc/gitlab:/etc/gitlab'
+      - '${VOLUMES_ROOT_PATH}/var/log/gitlab:/var/log/gitlab'
+      - '${VOLUMES_ROOT_PATH}/var/opt/gitlab:/var/opt/gitlab'
+      - './gitlab.rb:/etc/gitlab/gitlab.rb'
