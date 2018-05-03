@@ -19,14 +19,15 @@ dashboard = true
 
 [acme]
 email = "<<webmaster mail>>"
-storage = "/home/docker/traefik/acme/acme.json"
+storage = "/etc/traefik/acme/acme.json"
 entryPoint = "https"
 onHostRule = true
+onDemand = false
   [acme.httpChallenge]
   entryPoint = "http"
 
 [docker]
-  endpoint = "unix:///var/run/docker.sock"
-  domain = "<<domain>>"
-  watch = true
-  exposedbydefault = false
+endpoint = "unix:///var/run/docker.sock"
+domain = "<<domain>>"
+watch = true
+exposedbydefault = false
