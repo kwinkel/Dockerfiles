@@ -1,0 +1,38 @@
+version: "3"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - ${VOLUMES_ROOT_PATH}/postgres:/var/lib/postgresql/data
+    networks:
+      - default
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+
+  nextcloud:  
+    image: nextcloud
+    restart: always
+    volumes:
+      - ${VOLUMES_ROOT_PATH}/html:/var/www/html
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+    networks:
+      - default
+      - reverseproxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:${NEXTCLOUD_DOMAIN}"
