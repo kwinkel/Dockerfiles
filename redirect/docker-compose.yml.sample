@@ -1,0 +1,19 @@
+version: "3"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  app:
+    image: schmunk42/nginx-redirect
+    networks:
+      - reverseproxy
+    environment:
+      - SERVER_REDIRECT=<<target domain>>
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_reverseproxy
+      - traefik.port=80
+      - traefik.frontend.rule=Host:<<source domain>>
