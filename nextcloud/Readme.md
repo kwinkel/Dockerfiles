@@ -1,0 +1,1 @@
+in case of IO errors: `docker-compose exec nextcloud chown -R www-data:www-data /var/www/html`
