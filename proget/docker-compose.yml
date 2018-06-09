@@ -1,0 +1,33 @@
+version: "3"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  postgres:
+    image: postgres:9.5
+    volumes:
+      - ${VOLUMES_ROOT_PATH}/postgresql/data:/var/lib/postgresql/data
+      - ${VOLUMES_ROOT_PATH}/postgresql/backups:/backups
+    networks:
+      - default
+
+  proget:
+    image: inedo/proget
+    volumes:
+      - ${VOLUMES_ROOT_PATH}/proget/packages:/var/proget/packages
+      - ${VOLUMES_ROOT_PATH}/proget/extensions:/var/proget/extensions
+    networks:
+      - default
+      - reverseproxy
+    depends_on:
+      - postgres
+    environment:
+      - "PROGET_DATABASE=Server=postgres; Database=postgres; User Id=postgres; Password=;"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:${DOMAIN}"
