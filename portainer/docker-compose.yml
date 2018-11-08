@@ -18,7 +18,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_reverseproxy"
       - "traefik.port=9000"
-      - "traefik.frontend.rule=Host:portainer.kwinkel.one"
+      - "traefik.frontend.rule=Host:<<YOUR-HOSTNAME>>"
 
 volumes:
   data:
