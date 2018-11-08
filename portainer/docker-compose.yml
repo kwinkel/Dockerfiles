@@ -1,0 +1,24 @@
+version: "2"
+
+networks:
+  reverseproxy:
+    external:
+      name: traefik_reverseproxy
+
+services:
+  server:
+    image: portainer/portainer
+    restart: unless-stopped
+    networks:
+      - reverseproxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_reverseproxy"
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:portainer.kwinkel.one"
+
+volumes:
+  data:
