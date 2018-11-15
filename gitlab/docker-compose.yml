@@ -8,7 +8,7 @@ networks:
 services:
   omnibus:
     image: 'gitlab/gitlab-ce'
-    restart: always
+    restart: unless-stopped
     hostname: ${GITLAB_DOMAIN}
     networks:
       - reverseproxy
@@ -41,14 +41,19 @@ services:
       - "traefik.port=80"
       - "traefik.frontend.rule=Host:${GITLAB_DOMAIN}"
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - '${VOLUMES_ROOT_PATH}/etc/gitlab:/etc/gitlab'
       - '${VOLUMES_ROOT_PATH}/var/log/gitlab:/var/log/gitlab'
-      - '${VOLUMES_ROOT_PATH}/var/opt/gitlab:/var/opt/gitlab'
-      - /var/run/docker.sock:/var/run/docker.sock
+      - '${VOLUMES_ROOT_PATH}/var/opt/gitlab:/var/opt/gitlab'      
+      - '${TRAEFIK_ROOT}/certs/${GITLAB_DOMAIN}/fullchain.pem:/etc/gitlab/ssl/${GITLAB_DOMAIN}.crt'
+      - '${TRAEFIK_ROOT}/certs/${GITLAB_DOMAIN}/privkey.pem:/etc/gitlab/ssl/${GITLAB_DOMAIN}.key'
+      - '${TRAEFIK_ROOT}/certs/registry.${GITLAB_DOMAIN}/fullchain.pem:/etc/gitlab/ssl/registry.${GITLAB_DOMAIN}.crt'
+      - '${TRAEFIK_ROOT}/certs/registry.${GITLAB_DOMAIN}/privkey.pem:/etc/gitlab/ssl/registry.${GITLAB_DOMAIN}.key'
+      
 
   multi-runner:
     image: gitlab/gitlab-runner
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./gitlab-runner:/etc/gitlab-runner
       - ${VOLUMES_ROOT_PATH}/gitlab-runner/cache:/cache
