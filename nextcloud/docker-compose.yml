@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 
 networks:
   reverseproxy:
@@ -8,6 +8,7 @@ networks:
 services:
   postgres:
     image: postgres
+    restart: unless-stopped
     volumes:
       - ${VOLUMES_ROOT_PATH}/postgres:/var/lib/postgresql/data
     networks:
@@ -19,11 +20,13 @@ services:
 
   redis:
     image: redis
+    restart: unless-stopped
     networks:
       - default
 
   nextcloud:  
     build: ./nextcloud
+    restart: unless-stopped
     volumes:
       - ${VOLUMES_ROOT_PATH}/html:/var/www/html
     depends_on:
@@ -47,6 +50,7 @@ services:
 
   cron:
     build: ./nextcloud
+    restart: unless-stopped
     volumes:
       - ${VOLUMES_ROOT_PATH}/html:/var/www/html
     entrypoint: /cron.sh
